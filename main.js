@@ -102,6 +102,20 @@ loader.load("./models/oneBlock.glb", function (gltf) {
 
 
 loader.load("./models/watzz.glb", function (gltf) {
+
+  gltf.scene.traverse((o)=> {
+    console.log(o);
+    
+    if(o.isMesh && !(conditions.some(el => o.material.name.includes(el)))) {
+      if(o.material.name === "") {
+        return;
+      }
+      o.material.depthWrite = true;
+      console.log(o.material.name);
+    }
+  });
+  
+
 	scene.add( gltf.scene );
 }, undefined, function (error) {
 	console.error(error);
