@@ -2,7 +2,8 @@
   "name": "killuca3d",
   "version": "0.0.0",
   "scripts": {
-    "dev": "node --max_old_space_size=4096 ./node_modules/vite/bin/vite.js",
+    "dev": "vite",
+    "dev2": "node --max_old_space_size=4096 ./node_modules/vite/bin/vite.js",
     "build": "vite build",
     "serve": "vite preview"
   },
