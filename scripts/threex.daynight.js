@@ -53,10 +53,11 @@ THREEx.DayNight.StarField	= function(){
 //////////////////////////////////////////////////////////////////////////////////
 
 THREEx.DayNight.SunLight	= function(){
-	var light	= new THREE.DirectionalLight( 0xffffff, 1 );
+	var light	= new THREE.DirectionalLight( 0xffffff, 3.5 );
 	this.object3d	= light
 	
 	this.update	= function(sunAngle){
+		light.castShadow = true;
 		light.position.x = 0;
 		light.position.y = Math.sin(sunAngle) * 90000;
 		light.position.z = Math.cos(sunAngle) * 90000;
@@ -64,9 +65,10 @@ THREEx.DayNight.SunLight	= function(){
 
 		var phase	= THREEx.DayNight.currentPhase(sunAngle)
 		if( phase === 'day' ){
+			light.intensity = 3.5;
 			light.color.set("rgb(255,"+ (Math.floor(Math.sin(sunAngle)*200)+55) + "," + (Math.floor(Math.sin(sunAngle)*200)) +")");
 		}else if( phase === 'twilight' ){
-		        light.intensity = 1;
+		        light.intensity = 2;
 	        	light.color.set("rgb(" + (255-Math.floor(Math.sin(sunAngle)*510*-1)) + "," + (55-Math.floor(Math.sin(sunAngle)*110*-1)) + ",0)");
 		} else {
 			light.intensity	= 0;

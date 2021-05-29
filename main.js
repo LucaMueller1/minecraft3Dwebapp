@@ -14,6 +14,7 @@ const renderer = new THREE.WebGLRenderer({
 
 renderer.physicallyCorrectLights = true;
 renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.shadowMap.enabled = true;
 
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -22,10 +23,11 @@ camera.position.setZ(30);
 
 renderer.render(scene, camera);
 
-/*
+
 const ambientLight = new THREE.AmbientLight(0xFFFFFF);
-ambientLight.intensity = 10;
-scene.add(ambientLight);*/
+ambientLight.intensity = 1;
+
+//scene.add();
 
 //day/night cycle
 
@@ -44,7 +46,8 @@ scene.add(skydom.object3d);
 let starField	= new THREEx.DayNight.StarField()
 scene.add(starField.object3d);
 
-
+let skyLightHelper = new THREE.DirectionalLightHelper(sunLight.object3d);
+scene.add(skyLightHelper);
 
 //helpers
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -52,22 +55,20 @@ const gridHelper = new THREE.GridHelper(200, 50);
 
 scene.add(gridHelper);
 
-function randomIntFromInterval(min, max) { // min and max included 
-  return Math.floor(Math.random() * (max - min + 1) + min)
-}
-
 let torches = [];
 const spawnLights = (object) => {
   if(!object.name.includes("main") && !object.name.includes("Scene")) {
     let torchNumber = object.name.replace( /^\D+/g, '');
-    if(torchNumber % 4 == 0) {
-      console.log(object);
-      let light = new THREE.PointLight(0xff5900);
+    let torchMeshName = object.children[0].name;
+    //if(torchNumber % 4 == 0) {
+    if(torchMeshName.split("_")[1] === "onmain") {
+      let light = new THREE.PointLight(0xff802b);
       light.position.set(object.position.x, object.position.y+1, object.position.z);
       let helper = new THREE.PointLightHelper(light);
-      light.intensity = 30;
-      light.distance = 6;
-      light.decay = 1.4;
+      //light.castShadow = true;
+      light.intensity = 100;
+      light.distance = 0;
+      light.decay = 2;
       torches.push(light);
       scene.add(light, helper);
     } else {
@@ -81,22 +82,22 @@ const spawnLights = (object) => {
 const loader = new GLTFLoader();
 
 loader.load("./models/oneBlock.glb", function (gltf) {
-
-  //gltf.scene.traverse(spawnLights);
-
-  /*
   gltf.scene.traverse((o)=> {
-    //console.log(o);
-    
-    if(o.isMesh && !(conditions.some(el => o.material.name.includes(el)))) {
-      if(o.material.name === "") {
+    if(o.isMesh) {
+      if(o.material.name.includes("Torch")) {
+        o.visible = false;  //remove all default torches from oneBlock model
+      }
+      if(o.material.name === "Stationary_Lava.001") {
+        o.material.emissiveIntensity = 1.5; //make lava emit more light
         return;
       }
-      o.material.depthWrite = true;
-      console.log(o.material.name);
+      o.material.emissiveIntensity = 0; //make all remaining textures emit no light
+      o.castShadow = true;
+      o.receiveShadow = true;
     }
   });
-  */
+  gltf.scene.castShadow = true;
+  gltf.scene.receiveShadow = true;
 	scene.add( gltf.scene );
 }, undefined, function (error) {
 	console.error(error);
@@ -104,15 +105,24 @@ loader.load("./models/oneBlock.glb", function (gltf) {
 
 
 loader.load("./models/watzz.glb", function (gltf) {
+
+  gltf.scene.traverse((o)=> {
+    if(o.isMesh) {
+      o.castShadow = true;
+      o.receiveShadow = true;
+    }
+  });
+  gltf.scene.castShadow = true;
+  gltf.scene.receiveShadow = true;
+  gltf.scene.position.set(-32, 29, 15);
 	scene.add( gltf.scene );
 }, undefined, function (error) {
 	console.error(error);
 });
 
-loader.load("./models/torches.glb", function (gltf) {
-  gltf.scene.visible = false;
+loader.load("./models/torches2.glb", function (gltf) {
   gltf.scene.traverse(spawnLights);
-	scene.add( gltf.scene );
+	scene.add(gltf.scene);
 }, undefined, function (error) {
 	console.error(error);
 });
