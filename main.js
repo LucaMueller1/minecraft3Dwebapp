@@ -15,6 +15,7 @@ const renderer = new THREE.WebGLRenderer({
 renderer.physicallyCorrectLights = true;
 renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.shadowMap.enabled = true;
+//renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -37,17 +38,20 @@ var dayDuration	= 10;
 let sunSphere	= new THREEx.DayNight.SunSphere();
 scene.add(sunSphere.object3d);
 
-let sunLight = new THREEx.DayNight.SunLight()
+let sunLight = new THREEx.DayNight.SunLight();
 scene.add(sunLight.object3d);
 
-let skydom = new THREEx.DayNight.Skydom()
+let skydom = new THREEx.DayNight.Skydom();
 scene.add(skydom.object3d);
 
-let starField	= new THREEx.DayNight.StarField()
+let starField	= new THREEx.DayNight.StarField();
 scene.add(starField.object3d);
 
 let skyLightHelper = new THREE.DirectionalLightHelper(sunLight.object3d);
 scene.add(skyLightHelper);
+scene.add(new THREE.CameraHelper( sunLight.object3d.shadow.camera));
+
+const noShadowCast = ["Cobblestone.001", "Oak_Planks.001", "Oak_Slab.001", "Stone_Slab.001", "Stone.001", "Grass_Block.001", "Double_Stone_Slab.001", "Terracotta.001", "Colored_Terracotta.001", "Prismarine.001", "Double_Oak_Slab.001", "Block_of_Iron.001", "Hopper.001", "Netherrack.001"];
 
 //helpers
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -84,6 +88,7 @@ const loader = new GLTFLoader();
 loader.load("./models/oneBlock.glb", function (gltf) {
   gltf.scene.traverse((o)=> {
     if(o.isMesh) {
+      console.log(o.material.name);
       if(o.material.name.includes("Torch")) {
         o.visible = false;  //remove all default torches from oneBlock model
       }
@@ -92,11 +97,13 @@ loader.load("./models/oneBlock.glb", function (gltf) {
         return;
       }
       o.material.emissiveIntensity = 0; //make all remaining textures emit no light
-      o.castShadow = true;
+      if(!noShadowCast.includes(o.material.name)) {
+        o.castShadow = true;
+      }
       o.receiveShadow = true;
     }
   });
-  gltf.scene.castShadow = true;
+  //gltf.scene.castShadow = true;
   gltf.scene.receiveShadow = true;
 	scene.add( gltf.scene );
 }, undefined, function (error) {
@@ -109,11 +116,9 @@ loader.load("./models/watzz.glb", function (gltf) {
   gltf.scene.traverse((o)=> {
     if(o.isMesh) {
       o.castShadow = true;
-      o.receiveShadow = true;
+      //o.receiveShadow = true;
     }
   });
-  gltf.scene.castShadow = true;
-  gltf.scene.receiveShadow = true;
   gltf.scene.position.set(-32, 29, 15);
 	scene.add( gltf.scene );
 }, undefined, function (error) {
