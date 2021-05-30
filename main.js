@@ -3,6 +3,7 @@ import './style.css';
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { Lensflare, LensflareElement } from 'three/examples/jsm/objects/Lensflare.js';
 import {THREEx} from './scripts/threex.daynight';
 import { Vector3 } from 'three';
 
@@ -28,24 +29,28 @@ renderer.render(scene, camera);
 const ambientLight = new THREE.AmbientLight(0xFFFFFF);
 ambientLight.intensity = 1;
 
-//scene.add();
+//scene.add(ambientLight);
 
 //day/night cycle
 
 var sunAngle = -1/6*Math.PI*2;
 var dayDuration	= 10;
 
-let sunSphere	= new THREEx.DayNight.SunSphere();
-scene.add(sunSphere.object3d);
+//let sunSphere	= new THREEx.DayNight.SunSphere();
+//scene.add(sunSphere.object3d);
 
 let sunLight = new THREEx.DayNight.SunLight();
 scene.add(sunLight.object3d);
+
+let lensflare = new THREEx.DayNight.Lensflare(sunLight.object3d.color);
+scene.add(lensflare.object3d);
 
 let skydom = new THREEx.DayNight.Skydom();
 scene.add(skydom.object3d);
 
 let starField	= new THREEx.DayNight.StarField();
 scene.add(starField.object3d);
+
 
 let skyLightHelper = new THREE.DirectionalLightHelper(sunLight.object3d);
 scene.add(skyLightHelper);
@@ -143,6 +148,7 @@ const animate = () => {
   starField.update(sunAngle);
   skydom.update(sunAngle);
   sunLight.update(sunAngle);
-  sunSphere.update(sunAngle);
+  //sunSphere.update(sunAngle);
+  lensflare.update(sunAngle);
 }
 animate();

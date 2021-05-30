@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { Lensflare, LensflareElement } from 'three/examples/jsm/objects/Lensflare.js';
+
 
 export var THREEx	= THREEx	|| {}
 
@@ -92,9 +94,11 @@ THREEx.DayNight.SunLight	= function(){
 //////////////////////////////////////////////////////////////////////////////////
 
 THREEx.DayNight.SunSphere	= function(){
-	var geometry	= new THREE.SphereGeometry( 20, 30, 30 )
+	var geometry	= new THREE.SphereGeometry( 15, 30, 30 )
 	var material	= new THREE.MeshBasicMaterial({
-		color		: 0xff0000
+		color		: 0xff0000,
+		opacity: 0.3,
+		transparent: true
 	})
 	var mesh	= new THREE.Mesh(geometry, material)
 	this.object3d	= mesh
@@ -114,6 +118,31 @@ THREEx.DayNight.SunSphere	= function(){
 	}
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+//		LensFlare							//
+//////////////////////////////////////////////////////////////////////////////////
+
+THREEx.DayNight.Lensflare	= function(color){
+	const textureLoader = new THREE.TextureLoader();
+
+	const textureFlare0 = textureLoader.load( './textures/lensflare/lensflare0.png' );
+	const textureFlare3 = textureLoader.load( './textures/lensflare/lensflare3.png' );
+
+	const lensflare = new Lensflare();
+	lensflare.addElement( new LensflareElement( textureFlare0, 700, 0, color) );
+	lensflare.addElement( new LensflareElement( textureFlare3, 60, 0.6 ) );
+	lensflare.addElement( new LensflareElement( textureFlare3, 70, 0.7 ) );
+	lensflare.addElement( new LensflareElement( textureFlare3, 120, 0.9 ) );
+	lensflare.addElement( new LensflareElement( textureFlare3, 70, 1 ) );
+
+	this.object3d = lensflare;
+
+	this.update	= function(sunAngle){
+		lensflare.position.x = 0;
+		lensflare.position.y = Math.sin(sunAngle) * 400;
+		lensflare.position.z = Math.cos(sunAngle) * 400;
+	}
+}
 
 //////////////////////////////////////////////////////////////////////////////////
 //		Skydom								//
