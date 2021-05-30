@@ -26,18 +26,10 @@ camera.position.setZ(30);
 renderer.render(scene, camera);
 
 
-const ambientLight = new THREE.AmbientLight(0xFFFFFF);
-ambientLight.intensity = 1;
-
-//scene.add(ambientLight);
-
 //day/night cycle
 
 var sunAngle = -1/6*Math.PI*2;
 var dayDuration	= 10;
-
-//let sunSphere	= new THREEx.DayNight.SunSphere();
-//scene.add(sunSphere.object3d);
 
 let sunLight = new THREEx.DayNight.SunLight();
 scene.add(sunLight.object3d);
@@ -56,7 +48,7 @@ let skyLightHelper = new THREE.DirectionalLightHelper(sunLight.object3d);
 scene.add(skyLightHelper);
 scene.add(new THREE.CameraHelper( sunLight.object3d.shadow.camera));
 
-const noShadowCast = ["Cobblestone.001", "Oak_Planks.001", "Oak_Slab.001", "Stone_Slab.001", "Stone.001", "Grass_Block.001", "Double_Stone_Slab.001", "Terracotta.001", "Colored_Terracotta.001", "Prismarine.001", "Double_Oak_Slab.001", "Block_of_Iron.001", "Hopper.001", "Netherrack.001"];
+const noShadowCast = ["Cobblestone.001", "Oak_Planks.001", "Oak_Slab.001", "Stone_Slab.001", "Stone.001", "Grass_Block.001", "Double_Stone_Slab.001", "Terracotta.001", "Colored_Terracotta.001", "Prismarine.001", "Double_Oak_Slab.001", "Block_of_Iron.001", "Hopper.001", "Netherrack.001", "Dirt.001"];
 
 //helpers
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -69,7 +61,7 @@ const spawnLights = (object) => {
   if(!object.name.includes("main") && !object.name.includes("Scene")) {
     let torchNumber = object.name.replace( /^\D+/g, '');
     let torchMeshName = object.children[0].name;
-    //if(torchNumber % 4 == 0) {
+
     if(torchMeshName.split("_")[1] === "onmain") {
       let light = new THREE.PointLight(0xff802b);
       light.position.set(object.position.x, object.position.y+1, object.position.z);
@@ -93,7 +85,7 @@ const loader = new GLTFLoader();
 loader.load("./models/oneBlock.glb", function (gltf) {
   gltf.scene.traverse((o)=> {
     if(o.isMesh) {
-      console.log(o.material.name);
+      //console.log(o.material.name);
       if(o.material.name.includes("Torch")) {
         o.visible = false;  //remove all default torches from oneBlock model
       }
@@ -148,7 +140,6 @@ const animate = () => {
   starField.update(sunAngle);
   skydom.update(sunAngle);
   sunLight.update(sunAngle);
-  //sunSphere.update(sunAngle);
   lensflare.update(sunAngle);
 }
 animate();
