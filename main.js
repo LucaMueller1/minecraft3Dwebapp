@@ -14,6 +14,7 @@ const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector("#bg")
 })
 const clock = new THREE.Clock();
+const raycaster = new THREE.Raycaster();
 
 renderer.physicallyCorrectLights = true;
 renderer.outputEncoding = THREE.sRGBEncoding;
@@ -148,6 +149,36 @@ let pointsPath = PlayerPath.PointsPath();
 let path = PlayerPath.Path(pointsPath);
 let arrow = PlayerPath.Arrow();
 scene.add(path, arrow);
+
+//get click position
+
+const onClickCanvas = (event) => {
+  console.log(event);
+
+  let pointer = new THREE.Vector2();
+  pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+  raycaster.setFromCamera( pointer, camera );
+
+  const intersects = raycaster.intersectObject( scene, true);
+
+  if(intersects.length > 0) {
+    const res = intersects.filter( function ( res ) {
+      return res && res.object;
+    })[0];
+
+    if (res && res.object) {
+      console.log(res.object);
+      console.log(res.point);
+
+      //dot.position.copy(res.point);
+      //scene.add(dot)
+    }
+	}
+}
+
+document.addEventListener( 'click', onClickCanvas );
 
 
 //animate loop
