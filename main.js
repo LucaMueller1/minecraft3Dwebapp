@@ -4,7 +4,8 @@ import './style.css';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { Lensflare, LensflareElement } from 'three/examples/jsm/objects/Lensflare.js';
-import {THREEx} from './scripts/threex.daynight';
+import { THREEx } from './scripts/threex.daynight';
+import { PlayerPath } from './scripts/playerPath';
 import { Vector3 } from 'three';
 
 const scene = new THREE.Scene();
@@ -12,6 +13,7 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector("#bg")
 })
+const clock = new THREE.Clock();
 
 renderer.physicallyCorrectLights = true;
 renderer.outputEncoding = THREE.sRGBEncoding;
@@ -29,7 +31,7 @@ renderer.render(scene, camera);
 //day/night cycle
 
 var sunAngle = -1/6*Math.PI*2;
-var dayDuration	= 10;
+var dayDuration	= 300; //seconds
 
 let sunLight = new THREEx.DayNight.SunLight();
 scene.add(sunLight.object3d);
@@ -107,20 +109,32 @@ loader.load("./models/oneBlock.glb", function (gltf) {
 	console.error(error);
 });
 
+let wMixer;
+let wAni;
+let watzz;
 
 loader.load("./models/watzz.glb", function (gltf) {
 
   gltf.scene.traverse((o)=> {
     if(o.isMesh) {
       o.castShadow = true;
+      o.material.emissiveIntensity = 0; //stop emitting light from watzz textures
       //o.receiveShadow = true;
     }
   });
+  wMixer = new THREE.AnimationMixer( gltf.scene );
+  wAni = gltf.animations;
+  watzz = gltf.scene;
+  wMixer.clipAction( wAni[0] ).play();
+
   gltf.scene.position.set(-32, 29, 15);
-	scene.add( gltf.scene );
+	scene.add( watzz );
+
+  animate(); //start animation loop as soon as watzz is loaded in
 }, undefined, function (error) {
 	console.error(error);
 });
+
 
 loader.load("./models/torches2.glb", function (gltf) {
   gltf.scene.traverse(spawnLights);
@@ -129,17 +143,29 @@ loader.load("./models/torches2.glb", function (gltf) {
 	console.error(error);
 });
 
+//watzz movement path
+let pointsPath = PlayerPath.PointsPath();
+let path = PlayerPath.Path(pointsPath);
+let arrow = PlayerPath.Arrow();
+scene.add(path, arrow);
+
+
 //animate loop
 const animate = () => {
+  const delta = clock.getDelta();
+
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
 
   controls.update();
 
-  sunAngle += 0.002/dayDuration * Math.PI*2;
+  wMixer.update(delta);
+
+  sunAngle += delta/dayDuration * Math.PI*2;
   starField.update(sunAngle);
   skydom.update(sunAngle);
   sunLight.update(sunAngle);
   lensflare.update(sunAngle);
+  PlayerPath.update(pointsPath, watzz);
 }
-animate();
+//animate();
