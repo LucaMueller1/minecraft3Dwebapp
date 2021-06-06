@@ -31,7 +31,7 @@ THREEx.DayNight.StarField	= function(){
 		side	: THREE.BackSide,
  		color	: 0x808080,
 	})
-	var geometry	= new THREE.SphereGeometry(100, 32, 32)
+	var geometry	= new THREE.SphereGeometry(400, 32, 32)
 	var mesh	= new THREE.Mesh(geometry, material)
 	this.object3d	= mesh
 

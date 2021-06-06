@@ -3,6 +3,7 @@ import './style.css';
 
 import { FlyControls } from 'three/examples/jsm/controls/FlyControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { THREEx } from './scripts/threex.daynight';
 import { PlayerPath } from './scripts/playerPath';
 import { PlayerControls } from './scripts/playerControls';
@@ -27,6 +28,12 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 camera.position.setZ(30);
 renderer.render(scene, camera);
 
+
+//stats
+const statsContainer = document.createElement( 'div' );
+const stats = new Stats();
+statsContainer.appendChild( stats.dom );
+document.body.appendChild( statsContainer );
 
 //day/night cycle
 
@@ -68,7 +75,7 @@ const spawnLights = (object) => {
 
     if(torchMeshName.split("_")[1] === "onmain") {
       let light = new THREE.PointLight(0xff802b);
-      light.position.set(object.position.x, object.position.y+1, object.position.z);
+      light.position.set(object.position.x, object.position.y+0.7, object.position.z);
       let helper = new THREE.PointLightHelper(light);
       //light.castShadow = true;
       light.intensity = 100;
@@ -189,6 +196,8 @@ const animate = () => {
 
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
+
+  stats.update();
 
   //controls.update(delta);
   PlayerControls.update(controls, raycaster, scene);
