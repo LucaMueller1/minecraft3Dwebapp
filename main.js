@@ -5,6 +5,7 @@ import { FlyControls } from 'three/examples/jsm/controls/FlyControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { THREEx } from './scripts/threex.daynight';
 import { PlayerPath } from './scripts/playerPath';
+import { PlayerControls } from './scripts/playerControls';
 import { Vector3 } from 'three';
 
 const scene = new THREE.Scene();
@@ -51,14 +52,10 @@ scene.add(new THREE.CameraHelper( sunLight.object3d.shadow.camera));
 
 const noShadowCast = ["Cobblestone.001", "Oak_Planks.001", "Oak_Slab.001", "Stone_Slab.001", "Stone.001", "Grass_Block.001", "Double_Stone_Slab.001", "Terracotta.001", "Colored_Terracotta.001", "Prismarine.001", "Double_Oak_Slab.001", "Block_of_Iron.001", "Hopper.001", "Netherrack.001", "Dirt.001"];
 
-//helpers
-const controls = new FlyControls(camera, renderer.domElement);
-controls.movementSpeed = 10;
-controls.domElement = renderer.domElement;
-controls.rollSpeed = 1;
-controls.autoForward = false;
-controls.dragToLook = false;
 
+const controls = PlayerControls.Controls(camera, renderer.domElement);
+
+//helpers
 const gridHelper = new THREE.GridHelper(200, 50);
 
 scene.add(gridHelper);
@@ -193,7 +190,8 @@ const animate = () => {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
 
-  controls.update(delta);
+  //controls.update(delta);
+  PlayerControls.update(controls, raycaster, scene);
 
   wMixer.update(delta);
 
