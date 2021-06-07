@@ -58,14 +58,23 @@ scene.add(skyLightHelper);
 scene.add(new THREE.CameraHelper( sunLight.object3d.shadow.camera));
 
 const noShadowCast = ["Cobblestone.001", "Oak_Planks.001", "Oak_Slab.001", "Stone_Slab.001", "Stone.001", "Grass_Block.001", "Double_Stone_Slab.001", "Terracotta.001", "Colored_Terracotta.001", "Prismarine.001", "Double_Oak_Slab.001", "Block_of_Iron.001", "Hopper.001", "Netherrack.001", "Dirt.001"];
+const noShadowReceive = ["Acacia_Leaves.001", "Oak_Leaves.001"];
 
 
 const controls = PlayerControls.Controls(camera, renderer.domElement);
 
 //helpers
 const gridHelper = new THREE.GridHelper(200, 50);
-
 scene.add(gridHelper);
+
+
+const onWindowResize = () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+window.addEventListener('resize', onWindowResize);
+
 
 let torches = [];
 const spawnLights = (object) => {
@@ -108,7 +117,9 @@ loader.load("./models/oneBlock.glb", function (gltf) {
       if(!noShadowCast.includes(o.material.name)) {
         o.castShadow = true;
       }
-      o.receiveShadow = true;
+      if(!noShadowReceive.includes(o.material.name)) {
+        o.receiveShadow = true;
+      }
     }
   });
   //gltf.scene.castShadow = true;
@@ -162,8 +173,11 @@ scene.add(path, arrow);
 
 const onClickCanvas = (event) => {
   let pointer = new THREE.Vector2();
-  pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-	pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+  //pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1; //calculate based on pointer position
+	//pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+  pointer.x = 0;
+	pointer.y = 0;
 
   raycaster.setFromCamera( pointer, camera );
 

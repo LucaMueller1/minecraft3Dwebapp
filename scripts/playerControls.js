@@ -21,6 +21,7 @@ PlayerControls.Controls = (camera, dom) => {
     } );
 
     controls.addEventListener('lock', function () {
+        console.log("test");
         menu.style.display = 'none';
         blocker.style.display = 'none';
     });
