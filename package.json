@@ -11,6 +11,8 @@
     "vite": "^2.3.3"
   },
   "dependencies": {
+    "@tweenjs/tween.js": "^18.6.4",
+    "lodash": "^4.17.21",
     "three": "^0.128.0"
   }
 }

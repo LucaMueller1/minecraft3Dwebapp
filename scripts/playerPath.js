@@ -1,5 +1,7 @@
 import * as THREE from 'three';
-import { pathData } from '../data/watzzPath'
+import TWEEN from '@tweenjs/tween.js'
+import {_} from 'lodash'
+import { pathCrafting1 } from '../data/watzzPath'
 
 export var PlayerPath = PlayerPath || {}
 
@@ -7,8 +9,8 @@ PlayerPath.PointsPath = () => {
     const pointsPath = new THREE.CurvePath();
 
     let vectorArray = [];
-    for(let pos of pathData) {
-        vectorArray.push(new THREE.Vector3(pos[0], pos[1], pos[2]));
+    for(let pos of pathCrafting1) {
+        vectorArray.push(new THREE.Vector3(pos.x, pos.y, pos.z));
     }
 
     const line = new THREE.CatmullRomCurve3(vectorArray);
@@ -22,7 +24,7 @@ PlayerPath.Path = (pointsPath) => {
     const material = new THREE.LineBasicMaterial({color: 0x9132a8});
     const points = pointsPath.curves.reduce((p, d)=> [...p, ...d.getPoints(20)], []);
   
-    const geometry = new THREE.BufferGeometry().setFromPoints( points );
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
   
   
     return new THREE.Line( geometry, material );
@@ -59,8 +61,65 @@ PlayerPath.update = (pointsPath, player) => {
     
     player.quaternion.setFromAxisAngle( axis, radians );
     
-    PlayerPath.fraction +=0.001;
+    PlayerPath.fraction +=0.0001;
     if (PlayerPath.fraction > 1) {
         PlayerPath.fraction = 0;
     }
+}
+
+PlayerPath.tween = (object, shape, options) => {
+    options = _.merge({
+        from: 0,
+        to: 1,
+        duration: 20000,
+        speed: 500,
+        start: true,
+        yoyo: false,
+        onStart: null,
+        onComplete: () => {},
+        onUpdate: () => {},
+        smoothness: 100,
+        easing: TWEEN.Easing.Linear.None
+      }, options);
+    
+      // array of vectors to determine shape
+      /*
+      if (shape instanceof THREE.Shape) {
+    
+      } else if ( shape.constructor === Array ) {
+        shape = new THREE.CatmullRomCurve3(shape);
+    
+      } else {
+        throw '2nd argument is not a Shape, nor an array of vertices';
+      }*/
+      
+    
+      options.duration = options.duration || shape.getLength();
+    
+      var tween = new TWEEN.Tween({ distance: options.from })
+        .to({ distance: options.to }, options.duration)
+        .easing( options.easing )
+        .onStart( options.onStart )
+        .onComplete( options.onComplete )
+        .onUpdate(function() {
+          // get the position data half way along the path
+          console.log(this._object.distance);
+          var pathPosition = shape.getPoint( this._object.distance );
+    
+          // move to that position
+          object.position.set( pathPosition.x, pathPosition.y, pathPosition.z );
+    
+          object.updateMatrix();
+    
+          if ( options.onUpdate ) { options.onUpdate( this, shape ); }
+        })
+        .yoyo( options.yoyo );
+    
+      if ( options.yoyo ) {
+        tween.repeat( Infinity );
+      }
+    
+      if ( options.start ) { tween.start(); }
+    
+      return tween;
 }

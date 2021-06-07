@@ -4,6 +4,7 @@ import './style.css';
 import { FlyControls } from 'three/examples/jsm/controls/FlyControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
+import TWEEN from '@tweenjs/tween.js'
 import { THREEx } from './scripts/threex.daynight';
 import { PlayerPath } from './scripts/playerPath';
 import { PlayerControls } from './scripts/playerControls';
@@ -129,6 +130,7 @@ loader.load("./models/oneBlock.glb", function (gltf) {
 	console.error(error);
 });
 
+
 let wMixer;
 let wAni;
 let watzz;
@@ -150,6 +152,13 @@ loader.load("./models/watzz.glb", function (gltf) {
   gltf.scene.position.set(-32, 29, 15);
 	scene.add( watzz );
 
+  //watzz movement path
+  let pointsPath = PlayerPath.PointsPath();
+  let path = PlayerPath.Path(pointsPath);
+  scene.add(path);
+  let tween1 = PlayerPath.tween(watzz, pointsPath, {});
+  tween1.start();
+  
   animate(); //start animation loop as soon as watzz is loaded in
 }, undefined, function (error) {
 	console.error(error);
@@ -163,11 +172,8 @@ loader.load("./models/torches2.glb", function (gltf) {
 	console.error(error);
 });
 
-//watzz movement path
-let pointsPath = PlayerPath.PointsPath();
-let path = PlayerPath.Path(pointsPath);
-let arrow = PlayerPath.Arrow();
-scene.add(path, arrow);
+
+
 
 //get click position
 
@@ -223,6 +229,7 @@ const animate = () => {
   skydom.update(sunAngle);
   sunLight.update(sunAngle);
   lensflare.update(sunAngle);
-  PlayerPath.update(pointsPath, watzz);
+  //PlayerPath.update(pointsPath, watzz);
+
+  TWEEN.update();
 }
-//animate();
