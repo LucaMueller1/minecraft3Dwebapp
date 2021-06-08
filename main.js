@@ -8,6 +8,7 @@ import TWEEN from '@tweenjs/tween.js'
 import { THREEx } from './scripts/threex.daynight';
 import { PlayerPath } from './scripts/playerPath';
 import { PlayerControls } from './scripts/playerControls';
+import { craftingPath } from './data/watzzPath'
 import { Vector3 } from 'three';
 
 const scene = new THREE.Scene();
@@ -153,11 +154,8 @@ loader.load("./models/watzz.glb", function (gltf) {
 	scene.add( watzz );
 
   //watzz movement path
-  let pointsPath = PlayerPath.PointsPath();
-  let path = PlayerPath.Path(pointsPath);
-  scene.add(path);
-  let tween1 = PlayerPath.tween(watzz, pointsPath, {});
-  tween1.start();
+  let craftingTween = PlayerPath.RouteTween(watzz, craftingPath);
+  craftingTween.start();
   
   animate(); //start animation loop as soon as watzz is loaded in
 }, undefined, function (error) {
