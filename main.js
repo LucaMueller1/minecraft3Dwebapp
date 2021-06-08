@@ -148,13 +148,13 @@ loader.load("./models/watzz.glb", function (gltf) {
   wMixer = new THREE.AnimationMixer( gltf.scene );
   wAni = gltf.animations;
   watzz = gltf.scene;
-  wMixer.clipAction( wAni[0] ).play();
+  //wMixer.clipAction( wAni[0] ).play();
 
   gltf.scene.position.set(-32, 29, 15);
 	scene.add( watzz );
 
   //watzz movement path
-  let craftingTween = PlayerPath.RouteTween(watzz, craftingPath);
+  let craftingTween = PlayerPath.RouteTween(watzz, craftingPath, wAni, wMixer);
   craftingTween.start();
   
   animate(); //start animation loop as soon as watzz is loaded in

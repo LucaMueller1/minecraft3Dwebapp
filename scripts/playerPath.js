@@ -123,7 +123,7 @@ PlayerPath.tween = (object, shape, options) => {
       return tween;
 }
 
-PlayerPath.RouteTween = (object, pathData) => {
+PlayerPath.RouteTween = (object, pathData, animations, aniMixer) => {
 
     let tweens = [];
   
@@ -134,8 +134,22 @@ PlayerPath.RouteTween = (object, pathData) => {
         duration: path.duration,
         start: true,
         yoyo: false,
-        onStart: null,
-        onComplete: () => {},
+        onStart: () => {
+          console.log("start!");
+          if(animations && aniMixer && animations.length > 0) {
+            if(!aniMixer.clipAction(animations[0]).isRunning()) {
+              aniMixer.clipAction(animations[0]).play();
+            }
+            aniMixer.clipAction(animations[0]).reset();
+            aniMixer.clipAction(animations[0]).fadeIn(1);
+          }
+        },
+        onComplete: () => {
+          console.log("complete!");
+          if(animations && aniMixer && animations.length > 0) {
+            aniMixer.clipAction(animations[0]).fadeOut(1);
+          }
+        },
         onUpdate: () => {},
         smoothness: 100,
         easing: TWEEN.Easing.Linear.None
