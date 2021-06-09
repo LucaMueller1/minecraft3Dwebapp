@@ -141,13 +141,13 @@ PlayerPath.RouteTween = (object, pathData, animations, aniMixer) => {
               aniMixer.clipAction(animations[0]).play();
             }
             aniMixer.clipAction(animations[0]).reset();
-            aniMixer.clipAction(animations[0]).fadeIn(1);
+            aniMixer.clipAction(animations[0]).fadeIn(0.3);
           }
         },
         onComplete: () => {
           console.log("complete!");
           if(animations && aniMixer && animations.length > 0) {
-            aniMixer.clipAction(animations[0]).fadeOut(1);
+            aniMixer.clipAction(animations[0]).fadeOut(0.3);
           }
         },
         onUpdate: () => {},
