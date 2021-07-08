@@ -7,7 +7,7 @@ import Stats from 'three/examples/jsm/libs/stats.module.js';
 import TWEEN from '@tweenjs/tween.js'
 import { THREEx } from './scripts/threex.daynight';
 import { PlayerPath } from './scripts/playerPath';
-import { PlayerControls } from './scripts/playerControls';
+import { CreativeControls } from 'three-creative-controls';
 import { craftingPath } from './data/watzzPath'
 import { Vector3 } from 'three';
 
@@ -62,8 +62,10 @@ scene.add(new THREE.CameraHelper( sunLight.object3d.shadow.camera));
 const noShadowCast = ["Cobblestone.001", "Oak_Planks.001", "Oak_Slab.001", "Stone_Slab.001", "Stone.001", "Grass_Block.001", "Double_Stone_Slab.001", "Terracotta.001", "Colored_Terracotta.001", "Prismarine.001", "Double_Oak_Slab.001", "Block_of_Iron.001", "Hopper.001", "Netherrack.001", "Dirt.001"];
 const noShadowReceive = ["Acacia_Leaves.001", "Oak_Leaves.001"];
 
+const blocker = document.getElementById('blocker');
+const menu = document.getElementById('menu');
 
-const controls = PlayerControls.Controls(camera, renderer.domElement);
+const controls = CreativeControls.Controls(camera, renderer.domElement, menu, blocker);
 
 //helpers
 const gridHelper = new THREE.GridHelper(200, 50);
@@ -218,7 +220,7 @@ const animate = () => {
   stats.update();
 
   //controls.update(delta);
-  PlayerControls.update(controls, raycaster, scene);
+  CreativeControls.update(controls);
 
   wMixer.update(delta);
 

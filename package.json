@@ -13,6 +13,7 @@
   "dependencies": {
     "@tweenjs/tween.js": "^18.6.4",
     "lodash": "^4.17.21",
-    "three": "^0.128.0"
+    "three": "^0.128.0",
+    "three-creative-controls": "^1.0.1"
   }
 }
