@@ -76,7 +76,7 @@
 
 ![![Product Name Screen Shot][product-screenshot]](https://user-images.githubusercontent.com/64702286/148650571-bd49de17-d61b-43d1-90b9-cb7c0bcb27a5.png)
 
-Played around with Three.js and decided to try and load a Minecraft world in GLTF format. Turned out it's not as easy as thought (especially since I am pretty new to Blender and such). If you wanna see how everything works, have a look at the more detailed walktrough down below.
+Played around with Three.js and decided to try and load a Minecraft world in GLTF format. Turned out it's not as easy as thought (especially since I am pretty new to Blender and such). If you wanna see how everything works, have a look down below.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
