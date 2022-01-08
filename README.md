@@ -39,7 +39,7 @@
   <p align="center">
     Web rendering a Minecraft world using Three.js including dynamic lighting, a sky dome, transparent leaves and character animation (work in progress).
     <br />
-    <a href="https://lucamueller.me/minecraft-web"><strong>Demo »</strong></a>
+    <a href="http://mc3d.lucamueller.me"><strong>Demo »</strong></a>
     <br />
     <br />
     <a href="https://github.com/LucaMueller1/minecraft3Dwebapp/issues">Report Bug</a>
